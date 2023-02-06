@@ -27,10 +27,10 @@ The `render_template.py` script (should you choose to use it) takes one required
 render_template.py -t inventories/inventory.ini.j2 key=~/.ssh/key.pem name=master ip=1.2.3.4
 ```
 
-For a multi-node cluster set the worker names and IP addresses in the `workers` parameter:
+For a multi-node cluster set the worker names and IP addresses in the `workers` parameter. The `workers` parameter expects a space delimited list of `name:ip` pairs.
 
 ```
-render_template.py -t inventories/inventory.ini.js key=~/.ssh/key.pem name=master ip=1.2.3.4 workers="worker1:1.2.3.5 worker21.2.3.6"
+render_template.py -t inventories/inventory.ini.js workers="worker1:1.2.3.5 worker2:1.2.3.6 ..."
 ```
 
 ## Playbooks

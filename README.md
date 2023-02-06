@@ -36,7 +36,8 @@ render_template.py -t inventories/inventory.ini.js key=~/.ssh/key.pem name=maste
 ## Playbooks
 
 1. **setup.yml**<br/>Installs Python, Pip, and other OS dependencies (i.e. nfs-common, OpenShift)
-1.  **rke/main.yml**<br/>Installs RKE2 and configure the controller and all worker nodes, if any.
+1. **rke/main.yml**<br/>Installs RKE2, configures the controller and worker nodes, and downloads the kubeconfig
+1. **k3s/site.yml**<br/>Installs K3S, configures the controller and worker nodes, and downloads the kubeconfig
 1. **secrets.yml**<br/>Sets the `cloud-config` secret in the K8S cluster from the value of the `KUBE_CLOUD_CONF` environment variable.
 1. **helm.yml**<br/>Installs Helm and sets the *stable* and *cloudve* repositories.
 1. **storage.yml**<br/>Installs CSI drivers.  Currently only OpenStack (Cinder CSI) is supported.

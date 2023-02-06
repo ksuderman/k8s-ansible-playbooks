@@ -1,0 +1,77 @@
+---
+- hosts: controllers[0]
+  collections:
+    - kubernetes.core
+  tasks:
+    - name: Render the hostpath storage class template
+      k8s:
+        template:
+          path: templates/hostpath_storage_class.yaml.j2
+        state: present
+
+    - name: Render the ebs storage class
+      k8s:
+        template:
+          path: ebs_storage_class.yml.j2
+        state: present
+
+    - name: Add the Helm repository for the Cinder CSI driver
+      helm_repository:
+        name: cpo
+        repo_url: https://kubernetes.github.io/cloud-provider-openstack
+        state: present
+
+    - name: Create CSI driver namespace
+      k8s:
+        kind: Namespace
+        name: csi-drivers
+        state: present
+
+    - name: Helm install the OpenStack CSI Driver
+      helm:
+        name: cinder-csi
+        namespace: csi-drivers
+        chart_ref: cpo/openstack-cinder-csi
+        chart_version: 2.2.0
+        
+    # - name: Install OpenStack CSI Driver
+    #   k8s:
+    #     definition: "{{lookup('url', item, split_lines=False) | from_yaml_all | list}}"
+    #     state: present
+    #   loop:
+    #     - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/cinder-csi-plugin/cinder-csi-controllerplugin-rbac.yaml
+    #     - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/cinder-csi-plugin/cinder-csi-nodeplugin-rbac.yaml
+    #     - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/cinder-csi-plugin/cinder-csi-controllerplugin.yaml
+    #     - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/cinder-csi-plugin/cinder-csi-nodeplugin.yaml
+    #     - https://raw.githubusercontent.com/kubernetes/cloud-provider-openstack/master/manifests/cinder-csi-plugin/csi-cinder-driver.yaml
+
+
+# This is the code copied from the cloudman-boot playbook.
+#
+# - name: Install OpenStack CSI Driver
+#   command: >
+#     /usr/local/bin/helm repo add cpo https://kubernetes.github.io/cloud-provider-openstack
+#   when: kube_in_tree_provider and kube_cloud_provider == "openstack"
+
+# - name: Install OpenStack CSI Driver
+#   command: >
+#     /usr/local/bin/helm upgrade --install cinder-csi cpo/openstack-cinder-csi
+#         --namespace csi-drivers
+#   when: kube_in_tree_provider and kube_cloud_provider == "openstack"
+
+# - name: Render hostpath storage class template
+#   template:
+#     src: hostpath_storage_class.yaml.j2
+#     dest: /tmp/hostpath_storage_class.yaml
+
+# - name: Fallback to hostpath provisioner when no cloud provider is set
+#   shell: /usr/local/bin/kubectl apply -f /tmp/hostpath_storage_class.yaml
+#   when: not kube_cloud_provider
+
+# - name: Render ebs storage class template
+#   template:
+#     src: ebs_storage_class.j2
+#     dest: /tmp/ebs_storage_class.yml
+
+# - name: Deploy ebs storage class
+#   shell: /usr/local/bin/kubectl apply -f /tmp/ebs_storage_class.yml

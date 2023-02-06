@@ -1,0 +1,42 @@
+---
+# Installs the Rancher application into a Kubernetes cluster.
+# Requires: `ansible-galaxy collection install kubernetes`
+# Note: community.kubernetes.helm is moving to kubernetes.core
+- hosts: controllers[0]
+  vars:
+    namespace: cattle-system
+    hostname: "{{ ip }}.nip.io"
+  collections:
+    - kubernetes.core
+    - kubernetes.helm
+  tasks:
+    - name: Create the {{ namespace }} namespace.
+      k8s:
+        name: "{{ namespace }}"
+        kind: Namespace
+    - name: Install the helm repo
+      helm_repository:
+        name: rancher
+        repo_url: https://releases.rancher.com/server-charts/stable
+    #- name: Install Rancher
+    #  shell: helm install -n cattle-system rancher rancher/rancher --set hostname={{ hostname }} --set ingress.tls.source=letsEncrypt --set letsEncrypt.email=admin@cloudve.org --set letsEncrypt.environment=production --set letsEncrypt.ingress.class=nginx
+      #shell: helm install -n cattle-system rancher rancher/rancher --set hostname=rancher.{{ ansible_ssh_host }}.xip.io --set ingress.tls.source=letsEncrypt --set letsEncrypt.email=admin@cloudve.org --set letsEncrypt.environment=production --set letsEncrypt.ingress.class=nginx
+    - name: Install Rancher
+      kubernetes.core.helm:
+        name: rancher
+        namespace: "{{ namespace }}"
+        chart_ref: rancher/rancher
+        values:
+          hostname: "{{ hostname }}"
+          ingress:
+            tls:
+              source: letsEncrypt
+          letsEncrypt:
+            email: suderman@jhu.edu
+            environment: production
+            ingress:
+              class: nginx
+    - name:
+      debug:
+        msg: The Rancher dashboard should be available at https://{{ hostname }} in a few minutes.
+

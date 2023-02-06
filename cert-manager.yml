@@ -1,0 +1,42 @@
+---
+- hosts: controllers[0]
+  collections:
+    - kubernetes.core
+  vars:
+    version: v1.9.1
+  tasks:
+    - name: Create cert-manager namespace
+      k8s:
+        kind: Namespace
+        name: cert-manager
+        state: present
+
+    - name: Install cert-manager CRDs                                                                                                                                                                                      
+      k8s:                                                                                                                                                                                                             
+        definition: '{{ item }}'                                                                                                                                                                                       
+        namespace: cert-manager                                                                                                                                                                                        
+      with_items: '{{ lookup("url", "https://github.com/cert-manager/cert-manager/releases/download/{{ version }}/cert-manager.crds.yaml", split_lines=False) | from_yaml_all | list }}'                                              
+      when: item is not none
+
+    - name: Add cert manager helm repo
+      helm_repository:
+        name: jetstack
+        url: https://charts.jetstack.io
+
+    # - name: Render cluster issuer template
+    #   k8s:
+    #     template: templates/clusterissuer.yaml.j2
+    #     state: present
+
+    - name: Helm install cert-manager
+      helm:
+        name: cert-manager
+        namespace: cert-manager
+        chart_ref: jetstack/cert-manager
+        chart_version: "{{  version }}"
+        values:
+          ingressShim:
+            defaultIssuerName: letsencrypt-prod
+            defaultIssuerKind: ClusterIssuer
+          webhook:
+            enabled: false

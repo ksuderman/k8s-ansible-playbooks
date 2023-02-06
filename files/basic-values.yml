@@ -1,0 +1,64 @@
+configs:
+  galaxy.yml:
+    galaxy:
+      job_metrics_config_file: job_metrics_conf.yml
+      cleanup_job: onsuccess
+  job_metrics_conf.yml:
+  - type: core
+  - type: cgroup
+  - type: cpuinfo
+  - type: meminfo
+  - type: uname
+  job_conf.yml:
+    execution:
+      environment:
+        tpv_dispatcher:
+          tpv_config_files:
+            - lib/galaxy/jobs/rules/tpv_rules_local.yml
+persistence:
+  accessMode: ReadWriteMany
+  size: 200Gi
+  storageClass: nfs
+
+# refdata:
+#   enabled: true
+#   type: cvmfs
+#   pvc:
+#     size: 10Gi
+# cvmfs:
+#   enable: true
+#   deploy: true
+# ingress:
+#   enabled: true
+#   ingressClassName: nginx
+#   canary:
+#     enabled: true
+#   annotations:
+#     cert-manager.io/cluster-issuer: letsencrypt-prod
+#   hosts:
+#   - host: ~
+#     paths:
+#     - path: /galaxy
+#   path: /galaxy
+# # tusd:
+# #   ingress:
+# #     ingressClassName: ""
+# initJob:
+#   downloadToolConfs:
+#     enabled: true
+# jobHandlers:
+#   startupDelay: 5
+# postgresql:
+#   enabled: true
+#   deploy: true
+#   persistence:
+#     storageClass: nfs
+# webHandlers:
+#   startupDelay: 10
+# workflowHandlers:
+#   startupDelay: 0
+# resources:
+#   limits:
+#     cpu: 3
+#     memory: 16G
+#     ephemeral-storage: 64Gi

@@ -3,7 +3,7 @@
   collections:
     - kubernetes.core
   vars:
-    version: 4.2.3
+    version: 4.2.5
   tasks:
     - name: Create namespace for nginx ingress
       k8s:
@@ -25,26 +25,15 @@
         chart_version: "{{ version }}"
         values:
           controller:
-            kind: DaemonSet
             hostNetwork: true
-            service:
-              type: ClusterIP
+            hostPort:
+              enabled: true
             ingressClassResource:
               default: true
-            watchIngressWithoutClass: true
-            config:
-              use-forwarded-headers: true
-            # daemonset:
-              # useHostPort: true
-
-    # --set controller.kind="DaemonSet"
-    # --set controller.hostNetwork=true
-    # --set controller.hostPort.enabled=true
-    # --set controller.service.type="ClusterIP"
-    # --set controller.ingressClassResource.default=true
-    # --set controller.watchIngressWithoutClass=true
-# controller.config.use-forwarded-headers=true
-# Do not remove until we know later versions actually work without the fix.
+            kind: "DaemonSet"
+            service:
+              type: "ClusterIP"
+            watchIngressWithoutClass: true        
     - name: "Fix for issue https://github.com/kubernetes/ingress-nginx/issues/5401"
       k8s:
         name: ingress-nginx-admission

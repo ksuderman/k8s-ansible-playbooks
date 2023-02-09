@@ -34,27 +34,6 @@
             service:
               type: "ClusterIP"
             watchIngressWithoutClass: true        
-          # controller:
-          #   kind: DaemonSet
-          #   hostNetwork: true
-          #   service:
-          #     type: ClusterIP
-          #   ingressClassResource:
-          #     default: true
-          #   watchIngressWithoutClass: true
-          #   config:
-          #     use-forwarded-headers: true
-          #   # daemonset:
-          #     # useHostPort: true
-
-    # --set controller.kind="DaemonSet"
-    # --set controller.hostNetwork=true
-    # --set controller.hostPort.enabled=true
-    # --set controller.service.type="ClusterIP"
-    # --set controller.ingressClassResource.default=true
-    # --set controller.watchIngressWithoutClass=true
-# controller.config.use-forwarded-headers=true
-# Do not remove until we know later versions actually work without the fix.
     - name: "Fix for issue https://github.com/kubernetes/ingress-nginx/issues/5401"
       k8s:
         name: ingress-nginx-admission

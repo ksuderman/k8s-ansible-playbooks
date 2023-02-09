@@ -4,7 +4,7 @@
     - kubernetes.core
   vars:
     chart: cloudve/galaxy
-    version: 5.4.0
+    version: 5.5.0
     image: quay.io/galaxyproject/galaxy-min
     tag: 22.05
   tasks:
@@ -39,5 +39,5 @@
           repository: "{{ image }}"
           tag: "{{ tag }}"
         postgresql:
-          galaxyDatabasePassword: "{{ db_password }}"
+          galaxyDatabasePassword: galaxydbpassword
       

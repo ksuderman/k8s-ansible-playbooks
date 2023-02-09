@@ -36,16 +36,3 @@
             defaultClass: "{{ default }}"
             allowVolumeExpansion: "{{ allow_expansion }}"
             reclaimPolicy: "{{ reclaim }}"
-# function nfs() {
-# 	helm install nfs-provisioner nfs-ganesha/nfs-server-provisioner \
-# 	--set persistence.enabled=true\
-# 	--set persistence.storageClass="standard" \
-# 	--set persistence.size="200Gi" \
-# 	--set storageClass.create=true \
-# 	--set storageClass.defaultClass=true \
-# 	--set storageClass.allowVolumeExpansion=true \
-# 	--set storageClass.reclaimPolicy="Delete" \
-# 	--namespace nfs-provisioner \
-# 	--create-namespace
-# }
-

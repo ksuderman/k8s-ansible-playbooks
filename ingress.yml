@@ -3,7 +3,7 @@
   collections:
     - kubernetes.core
   vars:
-    version: 4.2.3
+    version: 4.2.5
   tasks:
     - name: Create namespace for nginx ingress
       k8s:
@@ -25,17 +25,27 @@
         chart_version: "{{ version }}"
         values:
           controller:
-            kind: DaemonSet
             hostNetwork: true
-            service:
-              type: ClusterIP
+            hostPort:
+              enabled: true
             ingressClassResource:
               default: true
-            watchIngressWithoutClass: true
-            config:
-              use-forwarded-headers: true
-            # daemonset:
-              # useHostPort: true
+            kind: "DaemonSet"
+            service:
+              type: "ClusterIP"
+            watchIngressWithoutClass: true        
+          # controller:
+          #   kind: DaemonSet
+          #   hostNetwork: true
+          #   service:
+          #     type: ClusterIP
+          #   ingressClassResource:
+          #     default: true
+          #   watchIngressWithoutClass: true
+          #   config:
+          #     use-forwarded-headers: true
+          #   # daemonset:
+          #     # useHostPort: true
 
     # --set controller.kind="DaemonSet"
     # --set controller.hostNetwork=true

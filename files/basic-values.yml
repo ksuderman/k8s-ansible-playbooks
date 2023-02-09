@@ -19,7 +19,12 @@ persistence:
   accessMode: ReadWriteMany
   size: 200Gi
   storageClass: nfs
-
+cvmfs:
+  cvmfscsi:
+    cache:
+      alien:
+        pvc:
+          name: cvmfs-alien-cache
 # refdata:
 #   enabled: true
 #   type: cvmfs

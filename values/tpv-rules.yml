@@ -1,0 +1,7 @@
+configs:
+  job_conf.yml:
+    execution:
+      environment:
+        tpv_dispatcher:
+          tpv_config_files:
+            - lib/galaxy/jobs/rules/tpv_rules_local.yml

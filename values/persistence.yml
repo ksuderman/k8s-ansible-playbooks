@@ -1,0 +1,4 @@
+persistence:
+  accessMode: ReadWriteMany
+  size: 500Gi
+  storageClass: nfs

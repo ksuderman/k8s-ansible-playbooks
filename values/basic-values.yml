@@ -1,25 +1,23 @@
 configs:
   galaxy.yml:
     galaxy:
-      job_metrics_config_file: job_metrics_conf.yml
+      #job_metrics_config_file: job_metrics_conf.yml
       cleanup_job: onsuccess
-  job_metrics_conf.yml:
-  - type: core
-  - type: cgroup
-  - type: cpuinfo
-  - type: meminfo
-  - type: uname
-  job_conf.yml:
-    execution:
-      environment:
-        tpv_dispatcher:
-          tpv_config_files:
-            - lib/galaxy/jobs/rules/tpv_rules_local.yml
+      admin_users: suderman@jhu.edu,admin@galaxyproject.org
+  # job_metrics_conf.yml:
+  # - type: core
+  # - type: cgroup
+  # - type: cpuinfo
+  # - type: meminfo
+  # - type: uname
+
 persistence:
-  accessMode: ReadWriteMany
-  size: 200Gi
   storageClass: nfs
+  size: 400Gi
+
 cvmfs:
+  deploy: false
+  storageClassName: galaxy-cvmfs
   cvmfscsi:
     cache:
       alien:

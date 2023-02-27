@@ -10,7 +10,12 @@
     reclaim: Delete
     version: 1.5.0
   tasks:
+    - name: Install openshift
+      pip:
+        name: openshift
+        state: present
     - name: Create the NFS namespace
+      #become: yes
       k8s:
         kind: Namespace
         name: nfs-provisioner

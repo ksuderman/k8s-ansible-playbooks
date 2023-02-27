@@ -1,5 +1,7 @@
 ---
 - hosts: controllers[0]
+  vars:
+    - version: 2.3.0
   collections:
     - kubernetes.core
   tasks:
@@ -15,24 +17,47 @@
           path: ebs_storage_class.yml.j2
         state: present
 
-    - name: Add the Helm repository for the Cinder CSI driver
-      helm_repository:
-        name: cpo
-        repo_url: https://kubernetes.github.io/cloud-provider-openstack
-        state: present
+    - block:      
+      - name: Add the Helm repository for the Cinder CSI driver
+        helm_repository:
+          name: cpo
+          repo_url: https://kubernetes.github.io/cloud-provider-openstack
+          state: present
 
-    - name: Create CSI driver namespace
-      k8s:
-        kind: Namespace
-        name: csi-drivers
-        state: present
+      - name: Create CSI driver namespace
+        k8s:
+          kind: Namespace
+          name: csi-drivers
+          state: present
 
-    - name: Helm install the OpenStack CSI Driver
-      helm:
-        name: cinder-csi
-        namespace: csi-drivers
-        chart_ref: cpo/openstack-cinder-csi
-        chart_version: 2.2.0
+      - name: Helm install the OpenStack CSI Driver
+        helm:
+          name: cinder-csi
+          namespace: csi-drivers
+          chart_ref: cpo/openstack-cinder-csi
+          chart_version: "{{ version }}"
+            
+      when: kube_cloud_provider == "opentack" 
+
+    - block:
+      - name: Add the wunderio Helm repository
+        helm_repository:
+          name: wunderio
+          repo_url: https://storage.googleapis.com/charts.wdr.io    
+          state: present
+      - name: Helm install RClone for GCP
+        helm:
+          name: rclone-csi
+          namespace: csi-drivers
+          chart_ref: wunderio/csi-rclone
+          values:
+            storageClass:
+              name: rclone
+            params:
+              remote: "google cloud storage"
+              remotePath: "{{ cluster_hostname | replace('.', '-') }}-gvl-data"
+      when: kube_cloud_provider == "gce"    
+
         
     # - name: Install OpenStack CSI Driver
     #   k8s:

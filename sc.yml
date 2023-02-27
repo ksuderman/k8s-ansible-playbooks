@@ -16,5 +16,5 @@
           metadata:
             name: "{{ storageClassName }}"
             labels:
-              kubernetes.io/cluster-service: "false"
+              kubernetes.io/cluster-service: "{{ is_default }}"
           provisioner: "{{ provisioner }}"

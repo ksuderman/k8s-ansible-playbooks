@@ -1,0 +1,67 @@
+configs:
+  galaxy.yml:
+    galaxy:
+      #job_metrics_config_file: job_metrics_conf.yml
+      cleanup_job: onsuccess
+      admin_users: suderman@jhu.edu,admin@galaxyproject.org
+  # job_metrics_conf.yml:
+  # - type: core
+  # - type: cgroup
+  # - type: cpuinfo
+  # - type: meminfo
+  # - type: uname
+
+persistence:
+  storageClass: nfs
+  size: 400Gi
+
+cvmfs:
+  deploy: false
+  storageClassName: galaxy-cvmfs
+  cvmfscsi:
+    cache:
+      alien:
+        pvc:
+          name: cvmfs-alien-cache
+# refdata:
+#   enabled: true
+#   type: cvmfs
+#   pvc:
+#     size: 10Gi
+# cvmfs:
+#   enable: true
+#   deploy: true
+# ingress:
+#   enabled: true
+#   ingressClassName: nginx
+#   canary:
+#     enabled: true
+#   annotations:
+#     cert-manager.io/cluster-issuer: letsencrypt-prod
+#   hosts:
+#   - host: ~
+#     paths:
+#     - path: /galaxy
+#   path: /galaxy
+# # tusd:
+# #   ingress:
+# #     ingressClassName: ""
+# initJob:
+#   downloadToolConfs:
+#     enabled: true
+# jobHandlers:
+#   startupDelay: 5
+# postgresql:
+#   enabled: true
+#   deploy: true
+#   persistence:
+#     storageClass: nfs
+# webHandlers:
+#   startupDelay: 10
+# workflowHandlers:
+#   startupDelay: 0
+# resources:
+#   limits:
+#     cpu: 3
+#     memory: 16G
+#     ephemeral-storage: 64Gi

@@ -19,8 +19,13 @@
       state: present
   - name: Copy the values file to the remote host
     copy:
-      src: files/basic-values.yml
-      dest: /tmp/values.yml
+      src: values/{{ item.src }}
+      dest: /tmp/{{ item.dest }}
+    loop:
+      - src: basic-values.yml
+        dest: values.yml
+      - src: persistence.yml
+        dest: persistence.yml
   - name: Helm install Galaxy
     helm:
       name: galaxy
@@ -29,6 +34,7 @@
       chart_version: "{{ version }}"
       values_files:
         - /tmp/values.yml
+        - /tmp/persistence.yml
       values:
         configs:
           galaxy.yml:

@@ -2,6 +2,7 @@
 - hosts: controllers[0]
   vars:
     - version: 2.3.0
+    - cluster_hostname: galaxy
   collections:
     - kubernetes.core
   tasks:
@@ -44,6 +45,11 @@
         helm_repository:
           name: wunderio
           repo_url: https://storage.googleapis.com/charts.wdr.io    
+          state: present
+      - name: Create csi-drivers namespace
+        k8s:
+          kind: Namespace
+          name: csi-drivers
           state: present
       - name: Helm install RClone for GCP
         helm:
